@@ -25,7 +25,7 @@
     function main(var1, var2) {
         // composite now
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(var1, 0, 0, var1.width, var1.height,70, 68, canvas.width - 100, canvas.height - 100);
+        ctx.drawImage(var1, 0, 0, var1.width, var1.height,68, 68, canvas.width - 100, canvas.height - 100);
         ctx.drawImage(var2, 0, 0, var2.width, var2.height,0 ,0, canvas.width, canvas.height);
         return canvas.toDataURL();
     }
@@ -45,7 +45,7 @@
             document.getElementById("image").src = e.target.result;
             img2 = loadImage(document.getElementById("image").src);
             //main(bg1,img2);
-            gifshot.createGIF({
+            gifshot.createGIF({'gifWidth': 1060,'gifHeight': 1060,
                 images: [
                     main(img2, bg1),
                     main(img2, bg2)
@@ -55,6 +55,8 @@
                     var image = obj.image,
                         animatedImage = document.createElement('img');
                     animatedImage.src = image;
+                    animatedImage.width="1060";
+                    animatedImage.height="1060";
                     document.body.appendChild(animatedImage);
                 }
             });
