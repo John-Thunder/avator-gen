@@ -1,0 +1,69 @@
+<html>
+
+<head>
+</head>
+<script src="./js/demo.js"></script>
+<script src="./js/gifshot.js"></script>
+
+<body>
+    <input type="file" id="files" />
+    <img id="image" width="256" height="256" />
+    <div>
+        <canvas id="canvas" width="1060" height="1060">
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+        <img id="ctx">
+    </div>
+</body>
+<script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    var bg1 = loadImage('./images/frame1.png');
+    var bg2 = loadImage('./images/frame2.png')
+
+    function main(var1, var2) {
+        // composite now
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(var1, 0, 0, var1.width, var1.height,70, 68, canvas.width - 100, canvas.height - 100);
+        ctx.drawImage(var2, 0, 0, var2.width, var2.height,0 ,0, canvas.width, canvas.height);
+        return canvas.toDataURL();
+    }
+
+    function loadImage(src) {
+        var img = new Image();
+        img.onload;
+        img.src = src;
+
+        return img;
+    }
+    document.getElementById("files").onchange = function () {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            // get loaded data and render thumbnail.
+            document.getElementById("image").src = e.target.result;
+            img2 = loadImage(document.getElementById("image").src);
+            //main(bg1,img2);
+            gifshot.createGIF({
+                images: [
+                    main(img2, bg1),
+                    main(img2, bg2)
+                ]
+            }, function (obj) {
+                if (!obj.error) {
+                    var image = obj.image,
+                        animatedImage = document.createElement('img');
+                    animatedImage.src = image;
+                    document.body.appendChild(animatedImage);
+                }
+            });
+
+        };
+
+        // read the image file as a data URL.
+        reader.readAsDataURL(this.files[0]);
+    };
+</script>
+
+</html>
