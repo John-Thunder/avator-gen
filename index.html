@@ -1,28 +1,60 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        .current a {
+            font-size: 20px;
+        }
+        
+        .over {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            opacity: 0.5;
+            z-index: 1000;
+        }
+        
+        .layout {
+            display: none;
+            position: absolute;
+            top: 40%;
+            left: 40%;
+            width: 20%;
+            height: 20%;
+            z-index: 1001;
+            text-align: center;
+        }
+    </style>
+    <script src="./js/gifshot.js"></script>
 </head>
-<script src="./js/demo.js"></script>
-<script src="./js/gifshot.js"></script>
 
 <body>
+
+    <div id="over" class="over"></div>
     <input type="file" id="files" />
     <img id="image" width="256" height="256" />
+    <button onclick="showLoading()">產生</button>
     <div style="display:none">
         <canvas id="canvas" width="1060" height="1060">
             Your browser does not support the HTML5 canvas tag.
         </canvas>
         <img id="ctx">
     </div>
+    <div id="layout" class="layout"><img src="http://images.cnblogs.com/cnblogs_com/qiuyan/477435/o_31.gif" /></div>
 </body>
-<script>
+
+<script type="text/javascript">
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
     var bg1 = loadImage('./images/校講1.png');
     var bg2 = loadImage('./images/校講2.png');
-    var bg3 =loadImage('./images/就博1.png');
+    var bg3 = loadImage('./images/就博1.png');
     var bg4 = loadImage('./images/就博2.png');
     var bg5 = loadImage('./images/實習1.png');
     var bg6 = loadImage('./images/實習2.png');
@@ -30,8 +62,8 @@
     function main(var1, var2) {
         // composite now
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(var1, 0, 0, var1.width, var1.height,68, 68, canvas.width - 100, canvas.height - 100);
-        ctx.drawImage(var2, 0, 0, var2.width, var2.height,0 ,0, canvas.width, canvas.height);
+        ctx.drawImage(var1, 0, 0, var1.width, var1.height, 68, 68, canvas.width - 100, canvas.height - 100);
+        ctx.drawImage(var2, 0, 0, var2.width, var2.height, 0, 0, canvas.width, canvas.height);
         return canvas.toDataURL();
     }
 
@@ -47,10 +79,13 @@
 
         reader.onload = function (e) {
             // get loaded data and render thumbnail.
+            showLoading();
             document.getElementById("image").src = e.target.result;
             img2 = loadImage(document.getElementById("image").src);
             //main(bg1,img2);
-            gifshot.createGIF({'gifWidth': 1060,'gifHeight': 1060,
+            gifshot.createGIF({
+                'gifWidth': 1060,
+                'gifHeight': 1060,
                 images: [
                     main(img2, bg1),
                     main(img2, bg2),
@@ -64,9 +99,10 @@
                     var image = obj.image,
                         animatedImage = document.createElement('img');
                     animatedImage.src = image;
-                    animatedImage.width="1060";
-                    animatedImage.height="1060";
+                    animatedImage.width = "1060";
+                    animatedImage.height = "1060";
                     document.body.appendChild(animatedImage);
+                    disLoading()
                 }
             });
 
@@ -75,6 +111,16 @@
         // read the image file as a data URL.
         reader.readAsDataURL(this.files[0]);
     };
+
+    function showLoading() {
+        document.getElementById("over").style.display = "block";
+        document.getElementById("layout").style.display = "block";
+    }
+
+    function disLoading() {
+        document.getElementById("over").style.display = "none";
+        document.getElementById("layout").style.display = "none";
+    }
 </script>
 
 </html>
