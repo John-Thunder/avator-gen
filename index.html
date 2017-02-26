@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 <head>
+    <meta charset="UTF-8">
+    <title>Document</title>
     <style type="text/css">
         .current a {
             font-size: 20px;
@@ -16,7 +19,7 @@
             height: 100%;
             background-color: #f5f5f5;
             opacity: 0.5;
-            z-index: 1000;
+            z-index: 960;
         }
         
         .layout {
@@ -29,6 +32,12 @@
             z-index: 1001;
             text-align: center;
         }
+        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
     </style>
     <script src="./js/gifshot.js"></script>
 </head>
@@ -36,35 +45,89 @@
 <body>
 
     <div id="over" class="over"></div>
-    <input type="file" id="files" />
-    <img id="image" width="256" height="256" />
-    <button onclick="showLoading()">產生</button>
-    <div style="display:none">
-        <canvas id="canvas" width="1060" height="1060">
-            Your browser does not support the HTML5 canvas tag.
+
+    <div style='float: left; width:960; height: 960; overflow: hidden; cursor: move;' class='handler' align="center">
+        <img src="" alt="" style="position: absolute; z-index: -2; visibility:hidden;" id="p">
+        <img src="./images/p1.png" alt="" draggable="false" id="bg" style=" visibility:hidden;" width="960" height="960">
+        <canvas id="result" width="960" height="960" style="position: absolute; left: 0px; top: 0px;display: none" >
         </canvas>
-        <img id="ctx">
+        <input type="file" id="files" />
+        <button onclick="create_GIFPhoto()">產生</button>
+        <canvas id="final" width="960" height="960">
+
+        </canvas>
     </div>
+
+
+    <!--<div style="float: left; width: 960; height: 960; background: #cfcfcf;">
+        <canvas id="final" width="960" height="960">
+
+        </canvas>
+        <input type="file" id="files" />
+        <button onclick="create_GIFPhoto()">產生</button>
+    </div>-->
     <div id="layout" class="layout"><img src="http://images.cnblogs.com/cnblogs_com/qiuyan/477435/o_31.gif" /></div>
 </body>
-
 <script type="text/javascript">
-    var canvas = document.getElementById("canvas");
+    var canvas1 = document.getElementById("result");
+    var context = canvas1.getContext("2d");
+    p = document.getElementById('p');
+    b = document.getElementById('bg');
+    is_down = false;
+    start = [0, 0];
+    bg_limit = [$(".handler").offset().left, $(".handler").offset().top];
+    bg_limit = [bg_limit[0], bg_limit[1], bg_limit[0] + $(".handler").width(), bg_limit[1] + $(".handler").height()];
+    $(".handler").on("mousedown", function (e) {
+        is_down = true;
+        start = [e.offsetX, e.offsetY]
+    }).on("mouseup", function (e) {
+        pasted();
+        is_down = false;
+    }).on("mousemove", function (e) {
+        if (!is_down) return;
+        move_x = e.offsetX - start[0];
+        move_y = e.offsetY - start[1];
+        target_x = $("#p").offset().left + move_x;
+        target_y = $("#p").offset().top + move_y;
+        /*
+        if( target_x < bg_limit[0] || 
+            (target_x + $("#p").width()) > bg_limit[2] || 
+            target_y < bg_limit[1] ||
+            (target_y + $("#p").height()) > bg_limit[3]) return;
+        */
+        $('#p').css("left", target_x)
+            .css("top", target_y);
+        start = [e.offsetX, e.offsetY]
+        pasted();
+    }).on("mouseleave", function (e) {
+        pasted();
+        is_down = false;
+    })
+    function pasted() {
+        context.clearRect(0, 0, canvas1.width, canvas1.height);
+        context.drawImage(p, $("#p").offset().left, $("#p").offset().top);
+        context.drawImage(b, 0, 0, 960, 960);
+    }
+
+    var canvas = document.getElementById("final");
     var ctx = canvas.getContext("2d");
 
-    var bg1 = loadImage('./images/校講1.png');
-    var bg2 = loadImage('./images/校講2.png');
-    var bg3 = loadImage('./images/就博1.png');
-    var bg4 = loadImage('./images/就博2.png');
-    var bg5 = loadImage('./images/實習1.png');
-    var bg6 = loadImage('./images/實習2.png');
+    var bg1 = loadImage('./images/p1.png');
+    var bg2 = loadImage('./images/p2.png');
+    var bg3 = loadImage('./images/p3.png');
+    var bg4 = loadImage('./images/p4.png');
+    var bg5 = loadImage('./images/p5.png');
+    var bg6 = loadImage('./images/p6.png');
+    var bg7 = loadImage('./images/p7.png');
+    var bg8 = loadImage('./images/p8.png');
+    var bg9 = loadImage('./images/p9.png');
 
     function main(var1, var2) {
         // composite now
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(var1, 0, 0, var1.width, var1.height, 68, 68, canvas.width - 100, canvas.height - 100);
-        ctx.drawImage(var2, 0, 0, var2.width, var2.height, 0, 0, canvas.width, canvas.height);
-        return canvas.toDataURL();
+        ctx.drawImage(var1, $("#p").offset().left, $("#p").offset().top);
+        ctx.drawImage(var2, 0, 0, 960, 960);
+        return canvas.toDataURL('image/jpeg',1);
     }
 
     function loadImage(src) {
@@ -79,39 +142,45 @@
 
         reader.onload = function (e) {
             // get loaded data and render thumbnail.
-            showLoading();
-            document.getElementById("image").src = e.target.result;
-            img2 = loadImage(document.getElementById("image").src);
-            //main(bg1,img2);
-            gifshot.createGIF({
-                'gifWidth': 1060,
-                'gifHeight': 1060,
-                images: [
-                    main(img2, bg1),
-                    main(img2, bg2),
-                    main(img2, bg3),
-                    main(img2, bg4),
-                    main(img2, bg5),
-                    main(img2, bg6)
-                ]
-            }, function (obj) {
-                if (!obj.error) {
-                    var image = obj.image,
-                        animatedImage = document.createElement('img');
-                    animatedImage.src = image;
-                    animatedImage.width = "1060";
-                    animatedImage.height = "1060";
-                    document.body.appendChild(animatedImage);
-                    disLoading()
-                }
-            });
-
+            document.getElementById("p").src = e.target.result;
+            pasted();
+            document.getElementById("result").style.display = "";
         };
 
         // read the image file as a data URL.
         reader.readAsDataURL(this.files[0]);
     };
-
+    function create_GIFPhoto() {
+        showLoading();
+        img2 = loadImage(document.getElementById("p").src);
+        //main(bg1,img2);
+        gifshot.createGIF({
+            'interval': 0.2,
+            'gifWidth': 960,
+            'gifHeight': 960,
+            images: [
+                main(img2, bg1),
+                main(img2, bg2),
+                main(img2, bg3),
+                main(img2, bg4),
+                main(img2, bg5),
+                main(img2, bg6),
+                main(img2, bg7),
+                main(img2, bg8),
+                main(img2, bg9)
+            ]
+        }, function (obj) {
+            if (!obj.error) {
+                var image = obj.image,
+                    animatedImage = document.createElement('img');
+                animatedImage.src = image;
+                animatedImage.width = "960";
+                animatedImage.height = "960";
+                document.body.appendChild(animatedImage);
+                disLoading()
+            }
+        });
+    }
     function showLoading() {
         document.getElementById("over").style.display = "block";
         document.getElementById("layout").style.display = "block";
@@ -121,6 +190,7 @@
         document.getElementById("over").style.display = "none";
         document.getElementById("layout").style.display = "none";
     }
+
 </script>
 
 </html>
