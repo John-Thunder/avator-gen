@@ -45,14 +45,15 @@
 <body>
 
     <div id="over" class="over"></div>
-
+    <div style="left: 0px; top: 0px">
+        <input type="file" id="files" />
+        <button onclick="create_GIFPhoto()">產生</button>
+    </div>
     <div style='float: left; width:960; height: 960; overflow: hidden; cursor: move;' class='handler' align="center">
         <img src="" alt="" style="position: absolute; z-index: -2; visibility:hidden;" id="p">
         <img src="./images/p1.png" alt="" draggable="false" id="bg" style=" visibility:hidden;" width="960" height="960">
-        <canvas id="result" width="960" height="960" style="position: absolute; left: 0px; top: 0px;display: none" >
+        <canvas id="result" width="960" height="960" style="position: absolute; left: 0px; top: 50px;display: none" >
         </canvas>
-        <input type="file" id="files" />
-        <button onclick="create_GIFPhoto()">產生</button>
         <canvas id="final" width="960" height="960">
 
         </canvas>
