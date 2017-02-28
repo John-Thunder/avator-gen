@@ -128,7 +128,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(var1, $("#p").offset().left, $("#p").offset().top);
         ctx.drawImage(var2, 0, 0, 960, 960);
-        return canvas.toDataURL('image/jpeg',1);
+        return canvas.toDataURL('image/png',1);
     }
 
     function loadImage(src) {
@@ -159,6 +159,7 @@
             'interval': 0.2,
             'gifWidth': 960,
             'gifHeight': 960,
+            'sampleInterval':1,
             images: [
                 main(img2, bg1),
                 main(img2, bg2),
